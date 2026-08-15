@@ -2,7 +2,7 @@ clear;
 addpath(genpath(pwd));
 
 % load data
-load('E:\Y\Single view\data\warpAR10P_processed.mat');
+load('E:\Y\Single view\data\warpAR10P.mat');
 
 rand('twister', 5489);
 c = length(unique(gnd));  
