@@ -45,7 +45,7 @@ for kk = 4
             for i = 1:repeatTimes
                
                 tic;
-                [node,~,~]=AGRNTR(fea, R, k,c,islocal,lambda, alpha,gamma);
+                [node,~]=AGRNTR(fea, R, k,c,islocal,lambda, alpha,gamma);
                 TimeCost(i)=toc;
 
                 % ========= æ€¿‡ =========

@@ -1,4 +1,4 @@
-function [node,S,total_loss]=AGRNTR(Y,r,k,c,islocal,lambda, alpha,gamma)
+function [node,S]=AGRNTR(Y,r,k,c,islocal,lambda, alpha,gamma)
 MaxIter = 100;
 n = size(Y);
 n = n(:);%size or original tensor
@@ -40,7 +40,7 @@ S_reg_loss    = zeros(1, MaxIter);
  L = D - S; 
 
   
- complete_iter = 0;  % 在循环外定义
+
 for i = 1:MaxIter*d                                                                                                                                                                                                                                                                                  
     err0=err;
     if i>1
@@ -67,26 +67,25 @@ for i = 1:MaxIter*d
                 end
             end
            
-        % 更新节点
+      
     A_updated = reshape(A,[n(od(1)),r(od(2)),r(od(1))]);
     A_updated = permute(A_updated,[3,1,2]);
     node{od(1)} = A_updated;
     
-    % 只在完整迭代后计算损失
+    % %
     if mod(i, d) == 0
         complete_iter = i/d;
         
-        % 1. 计算重构误差
+        
         err1 = norm(Y - A * B, 'fro')^2;
         sum_err(complete_iter) = err1;
         
-        % 2. 更新图结构
+        
         G = node{d};
         G_mode2 = reshape(permute(G, [2,3,1]), [n(d), r(1) * r(d)]);
         [F, S, L,~] = update(G_mode2', c, k, gamma, lambda, alpha, islocal);
          
         
-        % 3. 计算各项损失
         S_reg_loss(complete_iter) = gamma * norm(S, 'fro')^2;
         trace_loss(complete_iter) = 2 * lambda * trace(F' * L * F);
         total_loss(complete_iter) = 0.5*sum_err(complete_iter) + trace_loss(complete_iter) + S_reg_loss(complete_iter);
