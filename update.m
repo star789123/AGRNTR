@@ -3,10 +3,7 @@ function [F, A, L,evs] = update(X, c, k, r,lambda, beta,islocal)
 % c: number of clusters
 % k: number of neighbors
 % r: regularization parameter
-% islocal: 1=仅更新k近邻; 0=更新所有点
-% y: 聚类标签
-% A: 学到的相似度矩阵
-% evs: 图拉普拉斯矩阵的特征值（每次迭代）
+
 
 addpath(genpath('\funs'))
 
@@ -23,11 +20,11 @@ if nargin < 3
     k = 15;
 end
 
-%% Step 1: 计算原始空间距离矩阵
+%% 
 distX = L2_distance_1(X,X);
 [distX1, idx] = sort(distX,2);
 
-%% Step 2: 计算 r 的默认值
+%% 
 A = zeros(num);  
 for i = 1:num
     di = distX1(i,2:k+2); 
@@ -35,16 +32,16 @@ for i = 1:num
     A(i,id) = (di(k+1)-di)/(k*di(k+1)-sum(di(1:k))+eps);
 end
 
-A = (A + A') / 2;   % 确保 A 对称
+A = (A + A') / 2;  
 
-%% Step 5: 初始化 F（特征嵌入）
+%% 
 D0 = diag(sum(A));
 L0 = D0 - A;
 [F, ~, evs] = eig1(L0, c, 0);
 
 
 
-%% Step 6: 迭代更新 A 和 F
+%% 
 for iter = 1:NITER
     distf = L2_distance_1(F',F');
     A = zeros(num);
@@ -53,7 +50,7 @@ for iter = 1:NITER
         if islocal == 1
             idxa0 = idx(i,2:k+1); % 只更新初始k近邻
         else
-            idxa0 = 1:num;        % 全部点
+            idxa0 = 1:num;        
         end
 
         dfi = distf(i,idxa0);
